@@ -91,19 +91,19 @@ describe('SessionApiService', () => {
 
     httpClientSpy.post.mockReturnValue(of(expectedSession));
 
-    const session = await firstValueFrom(service.participate('123', '456')); // Fix: Pass the 'userId' argument
+    const session = await firstValueFrom(service.participate('123', '456'));
     expect(session).toEqual(expectedSession);
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
       'api/session/123/participate/456',
-      {}
+      null
     );
   });
 
   it('should unparticipate in a session', async () => {
     httpClientSpy.delete.mockReturnValue(of(null));
 
-    await service.unParticipate('123', '456'); // Fix: Pass the 'userId' argument
+    await service.unParticipate('123', '456');
     expect(httpClientSpy.delete).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.delete).toHaveBeenCalledWith(
       'api/session/123/participate/456'
