@@ -9,6 +9,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { expect } from '@jest/globals';
 
 import { RegisterComponent } from './register.component';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
+
+class AuthServiceMock {
+  register = jest.fn();
+}
+
+class RouterMock {
+  navigate = jest.fn();
+}
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -20,14 +31,18 @@ describe('RegisterComponent', () => {
       imports: [
         BrowserAnimationsModule,
         HttpClientModule,
-        ReactiveFormsModule,  
+        ReactiveFormsModule,
         MatCardModule,
         MatFormFieldModule,
         MatIconModule,
-        MatInputModule
-      ]
-    })
-      .compileComponents();
+        MatInputModule,
+      ],
+      providers: [
+        FormBuilder,
+        { provide: AuthService, useClass: AuthServiceMock },
+        { provide: Router, useClass: RouterMock },
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
@@ -36,5 +51,39 @@ describe('RegisterComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('form should be invalid when empty', () => {
+    expect(component.form.valid).toBeFalsy();
+  });
+
+  it('should navigate to login on successful registration', () => {
+    const authService = TestBed.inject(AuthService);
+    const router = TestBed.inject(Router);
+    jest.spyOn(authService, 'register').mockReturnValue(of(void 0));
+    jest.spyOn(router, 'navigate');
+
+    // Remplir le formulaire avec des données valides
+    component.form.controls['email'].setValue('test@example.com');
+    component.form.controls['firstName'].setValue('John');
+    component.form.controls['lastName'].setValue('Doe');
+    component.form.controls['password'].setValue('password');
+    component.submit();
+
+    expect(authService.register).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should set onError to true when registration fails', () => {
+    const authService = TestBed.inject(AuthService);
+    jest
+      .spyOn(authService, 'register')
+      .mockReturnValue(throwError(() => new Error('Registration failed')));
+
+    // Simuler la soumission avec des données susceptibles de provoquer une erreur
+    component.form.controls['email'].setValue('fail@example.com');
+    component.submit();
+
+    expect(component.onError).toBeTruthy();
   });
 });
