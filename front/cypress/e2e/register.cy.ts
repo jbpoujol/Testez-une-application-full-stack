@@ -1,4 +1,4 @@
-describe('Register Form', () => {
+describe('Register spec', () => {
   beforeEach(() => {
     cy.visit('/register'); // Assurez-vous d'adapter l'URL selon votre configuration
   });
