@@ -1,9 +1,13 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "isolatedModules": false
+    "isolatedModules": false,
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress"],
+    "strict": true,
+    "esModuleInterop": true
   },
-  "include": [
-    "../node_modules/cypress"
-  ]
+  "include": ["../node_modules/cypress", "**/*.ts"],
+  "exclude": ["cypress"]
 }
