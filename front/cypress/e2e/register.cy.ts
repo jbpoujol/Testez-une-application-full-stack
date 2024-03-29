@@ -15,9 +15,7 @@ describe('Register Form', () => {
       password: 'password123',
     };
 
-    cy.intercept('POST', '/api/auth/register', {
-      body: user,
-    });
+    cy.intercept('POST', '/api/auth/register', { statusCode: 201, body: user });
 
     cy.intercept(
       {
@@ -39,13 +37,13 @@ describe('Register Form', () => {
 
   it('should display an error message with invalid input', () => {
     const user = {
-      firstName: '',
+      firstName: 'John',
       lastName: 'Doe',
-      email: 'john.doe@example.com',
+      email: 'john.doe', // bad email
       password: 'password123',
     };
 
-    // On ne donne pas de prénom
+    cy.get('[formControlName="firstName"]').type(user.firstName);
     cy.get('[formControlName="lastName"]').type(user.lastName);
     cy.get('[formControlName="email"]').type(user.email);
     cy.get('[formControlName="password"]').type(user.password);
