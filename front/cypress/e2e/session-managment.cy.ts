@@ -6,15 +6,22 @@ describe('Session spec managment', () => {
     cy.get('form').submit();
     cy.wait(1000);
   });
-  describe('Session spec Create and delete', () => {
-    it('user can create and then delete a session with a specific title', () => {
+  describe('Session spec Create, update and delete', () => {
+    let selectedTeacherName: string;
+
+    it('user can create a session', () => {
       // Création de la session
       cy.get('button').contains('Create').first().click();
       cy.url().should('include', '/create');
       cy.get('input[formControlName="name"]').type("Cypress's session");
       cy.get('input[type="date"][formControlName="date"]').type('2024-01-01');
       cy.get('mat-select[formControlName="teacher_id"]').click();
-      cy.get('mat-option').first().click(); // Sélectionner le premier enseignant disponible
+      cy.get('mat-option')
+        .first()
+        .then(($option) => {
+          selectedTeacherName = $option.text().trim(); // Capture le texte de la première option
+          cy.wrap($option).should('be.visible').click(); // Sélectionne le premier enseignant disponible
+        });
       cy.get('textarea[formControlName="description"]').type(
         'Description de la session'
       );
@@ -23,7 +30,52 @@ describe('Session spec managment', () => {
       cy.contains('Session created !').should('exist');
     });
 
-    it('user can delete a session with a specific title', () => {
+    it('form is pre-filled correctly when updating a session', () => {
+      cy.contains("Cypress's session")
+        .parents('mat-card')
+        .within(() => {
+          cy.get('button').contains('Edit').click();
+        });
+      // Vérifier que le formulaire est pré-rempli avec les bonnes valeurs
+      cy.get('input[formControlName="name"]').should(
+        'have.value',
+        "Cypress's session"
+      );
+      cy.get('input[formControlName="date"]').should(
+        'have.value',
+        '2024-01-01'
+      );
+      cy.get('mat-select[formControlName="teacher_id"]')
+        .click()
+        .then(() => {
+          // Vérifie que l'option sélectionnée contient le nom de l'enseignant capturé lors de la création
+          cy.get('mat-option.mat-selected').should(($selectedOption) => {
+            const text = $selectedOption.text().trim();
+            expect(text).to.equal(selectedTeacherName);
+          });
+        });
+      // Fermer le mat-select en cliquant en dehors
+      cy.get('body').click(0, 0); // Clique en haut à gauche de la page pour fermer le select
+
+      cy.get('textarea[formControlName="description"]').should(
+        'have.value',
+        'Description de la session'
+      );
+    });
+
+    it('user can update a session', () => {
+      cy.get('input[formControlName="name"]')
+        .clear()
+        .type("Updated Cypress's session");
+      cy.get('textarea[formControlName="description"]')
+        .clear()
+        .type('Updated description');
+      cy.get('form').submit();
+      cy.contains('Session updated !').should('exist');
+      cy.url().should('include', '/sessions');
+    });
+
+    it('user can delete a session', () => {
       cy.wait(1000);
       cy.contains("Cypress's session")
         .parents('.item')
