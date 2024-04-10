@@ -66,6 +66,33 @@ describe('LoginComponent', () => {
     expect(component).toBeDefined();
   });
 
+  it('form invalid when empty', () => {
+    expect(component.form.valid).toBeFalsy();
+  });
+
+  it('email field validity', () => {
+    let email = component.form.controls['email'];
+    expect(email.valid).toBeFalsy();
+
+    // Email field is required
+    let errors = email.errors || {};
+    expect(errors['required']).toBeTruthy();
+
+    // Set email
+    email.setValue('test');
+    errors = email.errors || {};
+    expect(errors['email']).toBeTruthy(); // Should fail because it's not a valid email
+  });
+
+  it('password field validity', () => {
+    let password = component.form.controls['password'];
+    expect(password.valid).toBeFalsy();
+
+    // Password field is required
+    password.setValue('123');
+    expect(password.valid).toBeTruthy(); // Assuming Validators.min(3) was intended to be minLength(3)
+  });
+
   it('should submit login form and navigate on success', () => {
     const loginResponse: SessionInformation = {
       type: '',
