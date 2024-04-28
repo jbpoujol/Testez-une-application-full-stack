@@ -34,6 +34,7 @@ public class WebSecurityConfigTest {
         mockMvc.perform(get("/api/session"))
                 .andExpect(status().isOk());
     }
+
     @Test
     public void givenInvalidCredentials_whenLogin_thenUnauthorized() throws Exception {
         String invalidRequestBody = "{\"email\": \"wrong@studio.com\", \"password\": \"wrongPassword\"}";
