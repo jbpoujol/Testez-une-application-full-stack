@@ -133,13 +133,13 @@
         "e2e": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "yoga:serve-coverage",
+            "devServerTarget": "yoga:serve",
             "watch": true,
             "headless": false
           },
           "configurations": {
             "production": {
-              "devServerTarget": "yoga:serve-coverage:production"
+              "devServerTarget": "yoga:serve:production"
             }
           }
         },
@@ -147,13 +147,13 @@
           "builder": "@cypress/schematic:cypress",
           "options": {
             "browser": "chrome",
-            "devServerTarget": "yoga:serve-coverage",
+            "devServerTarget": "yoga:serve",
             "headless": true,
             "watch": false
           },
           "configurations": {
             "production": {
-              "devServerTarget": "yoga:serve-coverage:production"
+              "devServerTarget": "yoga:serve:production"
             }
           }
         }

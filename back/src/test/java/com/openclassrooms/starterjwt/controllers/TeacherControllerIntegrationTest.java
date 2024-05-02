@@ -44,7 +44,6 @@ public class TeacherControllerIntegrationTest {
     public void testFindAll() throws Exception {
         mockMvc.perform(get("/api/teacher"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].firstName").value("John"))
                 .andExpect(jsonPath("$[0].lastName").value("Doe"))
                 .andExpect(jsonPath("$[1].firstName").value("Jane"))

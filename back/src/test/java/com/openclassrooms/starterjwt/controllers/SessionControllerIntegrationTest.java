@@ -7,6 +7,7 @@ import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
 import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.TeacherRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class SessionControllerIntegrationTest {
     public void setup() {
         sessionRepository.deleteAll();
     }
+
+    @AfterEach
+    public void cleanUp() { sessionRepository.deleteAll(); teacherRepository.deleteAll();}
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
