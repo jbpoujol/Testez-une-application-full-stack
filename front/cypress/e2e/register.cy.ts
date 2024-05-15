@@ -1,6 +1,6 @@
 describe('Register spec', () => {
   beforeEach(() => {
-    cy.visit('/register'); // Assurez-vous d'adapter l'URL selon votre configuration
+    cy.visit('/register');
   });
 
   it('should display the register form', () => {
@@ -14,7 +14,8 @@ describe('Register spec', () => {
       email: 'john.doe@example.com',
       password: 'password123',
     };
-
+    /* 
+    TODO : uncomment this code to intercept the request and mock the response
     cy.intercept('POST', '/api/auth/register', { statusCode: 201, body: user });
 
     cy.intercept(
@@ -24,7 +25,7 @@ describe('Register spec', () => {
       },
       []
     ).as('login');
-
+ */
     cy.get('[formControlName="firstName"]').type(user.firstName);
     cy.get('[formControlName="lastName"]').type(user.lastName);
     cy.get('[formControlName="email"]').type(user.email);
